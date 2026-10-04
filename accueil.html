@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantification d'énergie et spectres atomiques</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #131a2e;
+    --text: #e8ecf7;
+    --muted: #92a0c2;
+    --accent: #ffb347;
+    --line: #2a3557;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #0b1020, #060911);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  /* Style du bouton de retour */
+  .btn-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--muted);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    margin-bottom: 20px;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+  }
+  .btn-home:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+    text-align: center;
+  }
+  p.subtitle {
+    color: var(--muted);
+    margin: 0 0 40px 0;
+    text-align: center;
+    font-size: 1rem;
+    max-width: 640px;
+  }
+  .cards {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 26px 22px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-decoration: none;
+    color: var(--text);
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .25);
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 26px rgba(0, 0, 0, .4);
+  }
+  .card-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    background: #0e1526;
+    border: 1px solid var(--line);
+  }
+  .card h2 {
+    font-size: 1.1rem;
+    margin: 0;
+    color: var(--accent);
+  }
+  .card p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    flex-grow: 1;
+  }
+  .card .go {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card:hover .go {
+    text-decoration: underline;
+  }
+  footer {
+    margin-top: 48px;
+    color: var(--muted);
+    font-size: 0.8rem;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- Bouton de retour vers le site -->
+<a class="btn-home" href="https://simphysique.blogspot.com/">← Retour au site SimPhysique</a>
+
+<h1>Quantification d'énergie et spectres atomiques</h1>
+<p class="subtitle">
+  Trois simulations interactives pour explorer la quantification des niveaux d'énergie
+  dans les atomes et ses conséquences sur la lumière émise ou absorbée.
+</p>
+
+<div class="cards">
+  <a class="card" href="index.html">
+    <div class="card-icon">⚡</div>
+    <h2>Expérience de Franck et Hertz</h2>
+    <p>
+      Simulation interactive du tube de Franck-Hertz : observez les collisions
+      inélastiques électron-atome et les maxima de courant régulièrement espacés
+      pour plusieurs gaz (Hg, Na, Ar, Ne).
+    </p>
+    <span class="go">Ouvrir la simulation →</span>
+  </a>
+
+  <a class="card" href="hydrogene_niveaux_energie.html">
+    <div class="card-icon">🔬</div>
+    <h2>Niveaux d'énergie de l'atome d'hydrogène</h2>
+    <p>
+      Modèle de Bohr : visualisez les niveaux d'énergie quantifiés de l'hydrogène
+      et calculez l'énergie, la longueur d'onde et la série spectrale d'une transition.
+    </p>
+    <span class="go">Ouvrir la simulation →</span>
+  </a>
+
+  <a class="card" href="spectres_emission_absorption.html">
+    <div class="card-icon">🌈</div>
+    <h2>Spectres d'émission et d'absorption</h2>
+    <p>
+      Comparez le spectre continu de la lumière blanche avec les spectres de raies
+      d'émission et d'absorption de plusieurs éléments chimiques.
+    </p>
+    <span class="go">Ouvrir la simulation →</span>
+  </a>
+
+  <a class="card" href="resume_theorique.html">
+    <div class="card-icon">📖</div>
+    <h2>Résumé théorique</h2>
+    <p>
+      Le cours en un coup d'œil : but de l'expérience de Franck et Hertz, quantum
+      d'énergie, modèle de Bohr, calcul de λ pour une transition, et applications
+      des spectres atomiques.
+    </p>
+    <span class="go">Lire le résumé →</span>
+  </a>
+</div>
+
+<footer>
+  Ressources pédagogiques — quantification de l'énergie et spectroscopie atomique.
+  <p>Proposé par Mohamed Chérif -(contenu IA) - chrif.md@gmail.com</p> 
+</footer>
+
+</body>
+</html>

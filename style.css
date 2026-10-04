@@ -1,0 +1,457 @@
+* {
+  box-sizing: border-box;
+}
+/* Styling du panneau Générateur & Appareils de Mesure */
+.instruments-panel {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.generator-box {
+  margin-bottom: 12px;
+}
+
+.generator-title {
+  font-weight: bold;
+  font-size: 0.9em;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.meters-row {
+  display: flex;
+  gap: 10px;
+}
+
+.digital-meter {
+  flex: 1;
+  background: #1e293b;
+  border-radius: 6px;
+  padding: 8px;
+  color: #fff;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+  border: 1px solid #475569;
+}
+
+.meter-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 4px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.lcd-display {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 6px 4px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: 1.3rem;
+  letter-spacing: 1px;
+}
+
+.voltmeter .lcd-display {
+  color: #38bdf8; /* Couleur affichage Voltmètre (Bleu) */
+  text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+}
+
+.ammeter .lcd-display {
+  color: #4ade80; /* Couleur affichage Ampèremètre (Vert) */
+  text-shadow: 0 0 5px rgba(74, 222, 128, 0.5);
+}
+
+.lcd-display small {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-left: 2px;
+}
+:root {
+  --bg: #0b1020;
+  --panel: #131a2e;
+  --text: #e8ecf7;
+  --muted: #92a0c2;
+  --accent: #ffb347;
+  --line: #2a3557;
+
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, #0b1020, #060911);
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 22px 15px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+}
+
+.breadcrumb {
+  text-align: center;
+  padding: 12px 15px 0;
+  font-size: 0.85rem;
+}
+
+.breadcrumb a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.breadcrumb a:hover {
+  text-decoration: underline;
+}
+
+header h1 {
+  margin: 0 0 5px;
+  font-size: clamp(25px, 4vw, 40px);
+  color: var(--text);
+}
+
+header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+main {
+  width: min(1400px, 96%);
+  margin: 18px auto 30px;
+}
+
+.simulation-card {
+  display: grid;
+  /* Le tube n'est qu'une illustration ; on lui laisse moins de place
+     qu'au panneau de contrôle relativement à sa hauteur (voir plus bas). */
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 16px;
+}
+
+.canvas-wrap,
+.controls,
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, .25);
+}
+
+.canvas-wrap {
+  position: relative;
+  /* Espace du tube réduit : il s'agit d'un schéma, pas du cœur de la
+     simulation (qui est surtout la courbe I(U) et les mesures). */
+  min-height: 260px;
+  overflow: hidden;
+}
+
+#tubeCanvas {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  display: block;
+  background: #05070d;
+}
+
+.legend {
+  position: absolute;
+  top: 12px;
+  left: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: rgba(19, 26, 46, .85);
+  border: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.legend b {
+  color: var(--text);
+}
+
+.electron-dot,
+.atom-dot {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  vertical-align: -1px;
+  margin-right: 4px;
+}
+
+.electron-dot { background: var(--accent); }
+.atom-dot { background: #cbcdda; }
+
+.controls {
+  padding: 18px;
+}
+
+.controls h2,
+.panel h2 {
+  margin: 0 0 15px;
+  color: var(--accent);
+  font-size: 1.05rem;
+}
+
+.controls label:not(.check) {
+  display: block;
+  margin: 15px 0 5px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.gas-select {
+  width: 100%;
+  padding: 8px 10px;
+  margin: 4px 0 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #0e1526;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--text);
+}
+
+.value-line {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 4px;
+  color: var(--muted);
+}
+
+input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+
+.meter,
+.energy-box {
+  margin-top: 15px;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  border: 1px solid var(--line);
+  background: #0e1526;
+}
+
+.meter-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+#currentValue {
+  font-size: 24px;
+  font-weight: 700;
+  color: #5cffa0;
+  margin-top: 4px;
+}
+
+.energy-box strong {
+  display: block;
+  font-size: 20px;
+  margin-top: 4px;
+  color: var(--accent);
+}
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 9px;
+  background: #0e1526;
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button:hover {
+  filter: brightness(1.15);
+}
+
+button.primary,
+button.sweep {
+  background: var(--accent);
+  color: #1a1200;
+  border-color: var(--accent);
+}
+
+button.sweep {
+  grid-column: 1 / -1;
+}
+
+.check {
+  display: block;
+  margin-top: 11px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.panel {
+  padding: 18px;
+}
+
+.graph-panel {
+  min-height: 390px;
+}
+
+#graphCanvas {
+  display: block;
+  width: 100%;
+  height: 300px;
+  background: #05070d;
+  border-radius: 10px;
+}
+
+.graph-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.panel p {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.panel p b,
+.panel p span#gasNameText1 {
+  color: var(--text);
+}
+
+.formula {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+
+.formula span {
+  padding: 10px 12px;
+  background: #0e1526;
+  border: 1px solid var(--line);
+  color: var(--accent);
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+.status {
+  padding: 12px;
+  background: #0e1526;
+  border-radius: 8px;
+  border-left: 4px solid var(--accent);
+  line-height: 1.45;
+  color: var(--text);
+}
+
+.measurements {
+  margin-top: 16px;
+}
+
+.measure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.measure-header h2 {
+  margin-bottom: 0;
+}
+
+.table-wrap {
+  overflow-x: auto;
+  margin-top: 12px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  color: var(--text);
+}
+
+th {
+  background: #0e1526;
+  color: var(--muted);
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 0 15px 25px;
+  font-size: 13px;
+}
+
+@media (max-width: 950px) {
+  .simulation-card,
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 16px;
+  }
+
+  .controls h2,
+  .buttons,
+  .meter,
+  .energy-box,
+  .check {
+    grid-column: 1 / -1;
+  }
+
+  .legend {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 600px) {
+  main {
+    width: 98%;
+  }
+
+  .controls {
+    display: block;
+  }
+
+  .buttons {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .canvas-wrap,
+  #tubeCanvas {
+    min-height: 220px;
+  }
+}

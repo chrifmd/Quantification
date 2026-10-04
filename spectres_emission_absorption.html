@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Spectres d'émission et d'absorption</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #131a2e;
+    --text: #e8ecf7;
+    --muted: #92a0c2;
+    --accent: #ffb347;
+    --line: #2a3557;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #0b1020, #060911);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    text-align: center;
+  }
+  p.subtitle {
+    color: var(--muted);
+    margin: 0 0 18px 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .controls {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 0.88rem;
+  }
+  .controls h2 {
+    font-size: 1rem;
+    margin: 0 0 6px 0;
+    color: var(--accent);
+  }
+  select, button {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #0e1526;
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+  }
+  .toggle-row button {
+    flex: 1;
+    cursor: pointer;
+    background: #0e1526;
+    color: var(--text);
+    border: 1px solid var(--line);
+    font-weight: 600;
+  }
+  .toggle-row button.active {
+    background: var(--accent);
+    color: #1a1200;
+    border-color: var(--accent);
+  }
+  canvas#stage {
+    display: block;
+    background: #05070d;
+    border-radius: 10px;
+  }
+  .hint { color: var(--muted); font-size: 0.8rem; }
+  .lines-list {
+    background: #0e1526;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.82rem;
+    max-height: 160px;
+    overflow-y: auto;
+  }
+  .lines-list div { margin-bottom: 4px; display:flex; align-items:center; gap:6px; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink:0; }
+  .caption {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin-top: 8px;
+  }
+  .breadcrumb {
+    width: 100%;
+    max-width: 1100px;
+    text-align: left;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+  }
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+   .signature{
+text-align: center;
+font-family: "Arial";
+font-size: 12px;
+font-weight: bold;
+color: rgb(170, 221, 241);
+margin-top: 30px;
+}
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="accueil.html">← Retour à l'accueil</a></nav>
+<h1>Spectres d'émission et d'absorption</h1>
+<p class="subtitle">Comparez le spectre continu, le spectre d'émission et le spectre d'absorption d'un élément</p>
+
+<div class="layout">
+  <div class="panel">
+    <canvas id="stage" width="640" height="420"></canvas>
+    <div class="caption" id="caption">Spectre continu (lumière blanche, sans atomes)</div>
+  </div>
+
+  <div class="panel controls">
+    <div>
+      <h2>Élément</h2>
+      <select id="elementSelect"></select>
+    </div>
+
+    <div>
+      <h2>Mode</h2>
+      <div class="toggle-row">
+        <button id="btnContinuous" class="active">Continu</button>
+        <button id="btnEmission">Émission</button>
+        <button id="btnAbsorption">Absorption</button>
+      </div>
+    </div>
+
+    <div>
+      <h2>Raies affichées (nm)</h2>
+      <div class="lines-list" id="linesList"></div>
+    </div>
+
+    <div class="hint">
+      <b>Émission</b> : un gaz chauffé émet de la lumière uniquement aux longueurs d'onde
+      correspondant aux transitions électroniques de ses atomes → raies brillantes sur fond noir.<br><br>
+      <b>Absorption</b> : une lumière blanche traverse un gaz froid ; ce gaz absorbe les mêmes
+      longueurs d'onde → raies sombres sur fond continu coloré.
+    </div>
+  </div>
+</div>
+ <footer>
+
+     <p>Mohamed Chérif - Menzel Témime - Tunisie (contenu IA) - chrif.md@gmail.com</p> 
+  </footer>
+<script>
+// ---------- Données spectrales (longueurs d'onde en nm, valeurs connues/approx.) ----------
+const ELEMENTS = {
+  hydrogene: {
+    name: 'Hydrogène (série de Balmer, visible)',
+    lines: [
+      { wl: 656.3, label: 'Hα' },
+      { wl: 486.1, label: 'Hβ' },
+      { wl: 434.0, label: 'Hγ' },
+      { wl: 410.2, label: 'Hδ' }
+    ]
+  },
+  helium: {
+    name: 'Hélium',
+    lines: [
+      { wl: 706.5, label: 'He' },
+      { wl: 667.8, label: 'He' },
+      { wl: 587.6, label: 'He (D3)' },
+      { wl: 501.6, label: 'He' },
+      { wl: 447.1, label: 'He' },
+      { wl: 402.6, label: 'He' }
+    ]
+  },
+  sodium: {
+    name: 'Sodium',
+    lines: [
+      { wl: 589.0, label: 'Na D2' },
+      { wl: 589.6, label: 'Na D1' }
+    ]
+  },
+  neon: {
+    name: 'Néon',
+    lines: [
+      { wl: 703.2, label: 'Ne' },
+      { wl: 692.9, label: 'Ne' },
+      { wl: 640.2, label: 'Ne' },
+      { wl: 621.7, label: 'Ne' },
+      { wl: 585.2, label: 'Ne' },
+      { wl: 540.1, label: 'Ne' }
+    ]
+  },
+  mercure: {
+    name: 'Mercure',
+    lines: [
+      { wl: 690.7, label: 'Hg' },
+      { wl: 579.1, label: 'Hg' },
+      { wl: 546.1, label: 'Hg' },
+      { wl: 491.6, label: 'Hg' },
+      { wl: 435.8, label: 'Hg' },
+      { wl: 404.7, label: 'Hg' }
+    ]
+  }
+};
+
+const WL_MIN = 380, WL_MAX = 750; // domaine visible affiché
+
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+const bandTop = 60, bandHeight = 260;
+
+// ---------- Conversion longueur d'onde -> couleur RGB approximative ----------
+function wavelengthToColor(wl) {
+  let r=0, g=0, b=0;
+  if (wl >= 380 && wl < 440) { r = -(wl-440)/(440-380); g = 0; b = 1; }
+  else if (wl >= 440 && wl < 490) { r = 0; g = (wl-440)/(490-440); b = 1; }
+  else if (wl >= 490 && wl < 510) { r = 0; g = 1; b = -(wl-510)/(510-490); }
+  else if (wl >= 510 && wl < 580) { r = (wl-510)/(580-510); g = 1; b = 0; }
+  else if (wl >= 580 && wl < 645) { r = 1; g = -(wl-645)/(645-580); b = 0; }
+  else if (wl >= 645 && wl <= 750) { r = 1; g = 0; b = 0; }
+
+  let factor = 1;
+  if (wl >= 380 && wl < 420) factor = 0.3 + 0.7*(wl-380)/(420-380);
+  else if (wl >= 700 && wl <= 750) factor = 0.3 + 0.7*(750-wl)/(750-700);
+
+  const gamma = 0.8;
+  const R = Math.round(255 * Math.pow(r*factor, gamma));
+  const G = Math.round(255 * Math.pow(g*factor, gamma));
+  const B = Math.round(255 * Math.pow(b*factor, gamma));
+  return `rgb(${R},${G},${B})`;
+}
+
+function xForWavelength(wl) {
+  const t = (wl - WL_MIN) / (WL_MAX - WL_MIN);
+  return 40 + t * (W - 80);
+}
+
+let currentElementKey = 'hydrogene';
+let currentMode = 'continuous'; // continuous | emission | absorption
+
+function drawAxis() {
+  ctx.strokeStyle = '#3a4670';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(40, bandTop + bandHeight + 20);
+  ctx.lineTo(W-40, bandTop + bandHeight + 20);
+  ctx.stroke();
+
+  ctx.fillStyle = '#92a0c2';
+  ctx.font = '11px Segoe UI';
+  ctx.textAlign = 'center';
+  for (let wl = 400; wl <= 700; wl += 50) {
+    const x = xForWavelength(wl);
+    ctx.beginPath();
+    ctx.moveTo(x, bandTop + bandHeight + 20);
+    ctx.lineTo(x, bandTop + bandHeight + 25);
+    ctx.strokeStyle = '#3a4670';
+    ctx.stroke();
+    ctx.fillText(wl + ' nm', x, bandTop + bandHeight + 40);
+  }
+  ctx.textAlign = 'left';
+}
+
+function drawContinuousBand(alpha = 1) {
+  for (let x = 40; x < W - 40; x++) {
+    const t = (x - 40) / (W - 80);
+    const wl = WL_MIN + t * (WL_MAX - WL_MIN);
+    ctx.fillStyle = wavelengthToColor(wl);
+    ctx.globalAlpha = alpha;
+    ctx.fillRect(x, bandTop, 1, bandHeight);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function drawBlackBand() {
+  ctx.fillStyle = '#050505';
+  ctx.fillRect(40, bandTop, W - 80, bandHeight);
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = '#e8ecf7';
+  ctx.font = '13px Segoe UI';
+
+  const el = ELEMENTS[currentElementKey];
+
+  if (currentMode === 'continuous') {
+    drawContinuousBand(1);
+  } else if (currentMode === 'emission') {
+    drawBlackBand();
+    el.lines.forEach(line => {
+      const x = xForWavelength(line.wl);
+      const color = wavelengthToColor(line.wl);
+      const grad = ctx.createLinearGradient(x-6, 0, x+6, 0);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.5, color);
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x-6, bandTop, 12, bandHeight);
+    });
+  } else if (currentMode === 'absorption') {
+    drawContinuousBand(1);
+    el.lines.forEach(line => {
+      const x = xForWavelength(line.wl);
+      const grad = ctx.createLinearGradient(x-4, 0, x+4, 0);
+      grad.addColorStop(0, 'rgba(0,0,0,0)');
+      grad.addColorStop(0.5, 'rgba(0,0,0,0.92)');
+      grad.addColorStop(1, 'rgba(0,0,0,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(x-4, bandTop, 8, bandHeight);
+    });
+  }
+
+  // cadre
+  ctx.strokeStyle = '#2a3557';
+  ctx.lineWidth = 2;
+  ctx.strokeRect(40, bandTop, W - 80, bandHeight);
+
+  drawAxis();
+
+  // titre du mode
+  ctx.fillStyle = '#c7d2f0';
+  ctx.font = '14px Segoe UI';
+  const title = currentMode === 'continuous'
+    ? 'Spectre continu (source de lumière blanche)'
+    : currentMode === 'emission'
+      ? `Spectre d'émission — ${el.name}`
+      : `Spectre d'absorption — ${el.name}`;
+  ctx.fillText(title, 40, 30);
+}
+
+// ---------- UI ----------
+const elementSelect = document.getElementById('elementSelect');
+Object.keys(ELEMENTS).forEach(key => {
+  const opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = ELEMENTS[key].name;
+  elementSelect.appendChild(opt);
+});
+elementSelect.value = currentElementKey;
+
+function updateLinesList() {
+  const el = ELEMENTS[currentElementKey];
+  const container = document.getElementById('linesList');
+  if (currentMode === 'continuous') {
+    container.innerHTML = '<span style="color:#92a0c2;">Aucune raie — spectre continu de toutes les couleurs.</span>';
+    return;
+  }
+  container.innerHTML = el.lines
+    .slice()
+    .sort((a,b) => a.wl - b.wl)
+    .map(l => `<div><span class="dot" style="background:${wavelengthToColor(l.wl)}"></span>${l.label} — ${l.wl.toFixed(1)} nm</div>`)
+    .join('');
+}
+
+function updateCaption() {
+  const captions = {
+    continuous: "Toutes les longueurs d'onde du visible sont présentes, sans interruption.",
+    emission: "Le gaz chauffé n'émet que certaines longueurs d'onde précises : raies brillantes sur fond noir.",
+    absorption: "La lumière blanche traverse le gaz froid ; il absorbe exactement les mêmes longueurs d'onde qu'il émettrait à chaud."
+  };
+  document.getElementById('caption').textContent = captions[currentMode];
+}
+
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('btnContinuous').classList.toggle('active', mode === 'continuous');
+  document.getElementById('btnEmission').classList.toggle('active', mode === 'emission');
+  document.getElementById('btnAbsorption').classList.toggle('active', mode === 'absorption');
+  updateLinesList();
+  updateCaption();
+  draw();
+}
+
+document.getElementById('btnContinuous').addEventListener('click', () => setMode('continuous'));
+document.getElementById('btnEmission').addEventListener('click', () => setMode('emission'));
+document.getElementById('btnAbsorption').addEventListener('click', () => setMode('absorption'));
+elementSelect.addEventListener('change', () => {
+  currentElementKey = elementSelect.value;
+  updateLinesList();
+  draw();
+});
+
+setMode('continuous');
+</script>
+
+</body>
+
+</html>

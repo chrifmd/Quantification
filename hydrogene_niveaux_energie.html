@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Niveaux d'énergie de l'atome d'hydrogène</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #131a2e;
+    --text: #e8ecf7;
+    --muted: #92a0c2;
+    --accent: #ffb347;
+    --line: #2a3557;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #0b1020, #060911);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+  }
+  h1 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+    text-align: center;
+  }
+  p.subtitle {
+    color: var(--muted);
+    margin: 0 0 18px 0;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  .layout {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 1100px;
+  }
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  #diagram {
+    display: block;
+    background: radial-gradient(ellipse at 50% 0%, #10182e 0%, #080c18 80%);
+    border-radius: 10px;
+  }
+  .controls {
+    width: 280px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    font-size: 0.88rem;
+  }
+  .controls h2 {
+    font-size: 1rem;
+    margin: 0 0 6px 0;
+    color: var(--accent);
+  }
+  select, button {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #0e1526;
+    color: var(--text);
+    font-size: 0.88rem;
+  }
+  button {
+    cursor: pointer;
+    background: var(--accent);
+    color: #1a1200;
+    font-weight: 600;
+    border: none;
+    transition: transform 0.1s ease;
+  }
+  button:hover { transform: translateY(-1px); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+  .result-box {
+    background: #0e1526;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    line-height: 1.6;
+  }
+  .result-box .label { color: var(--muted); }
+  .result-box .value { color: var(--accent); font-weight: 600; }
+  .series-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 0.78rem;
+  }
+  .series-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .swatch {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+  .hint {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .breadcrumb {
+    width: 100%;
+    max-width: 1100px;
+    text-align: left;
+    margin-bottom: 14px;
+    font-size: 0.85rem;
+  }
+  .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+   .signature{
+text-align: center;
+font-family: "Arial";
+font-size: 12px;
+font-weight: bold;
+color: rgb(170, 221, 241);
+margin-top: 30px;
+}
+</style>
+</head>
+<body>
+
+<nav class="breadcrumb"><a href="accueil.html">← Retour à l'accueil</a></nav>
+<h1>Niveaux d'énergie de l'atome d'hydrogène</h1>
+<p class="subtitle">Modèle de Bohr — cliquez sur deux niveaux pour visualiser une transition</p>
+
+<div class="layout">
+  <div class="panel">
+    <canvas id="diagram" width="620" height="560"></canvas>
+  </div>
+
+  <div class="panel controls">
+    <div>
+      <h2>Sélection manuelle</h2>
+      <label class="hint">Niveau initial (n₁)</label>
+      <select id="n1"></select>
+      <br><br>
+      <label class="hint">Niveau final (n₂)</label>
+      <select id="n2"></select>
+      <br><br>
+      <button id="calcBtn">Calculer la transition</button>
+      <button id="resetBtn" style="background:#2a3557; color:#e8ecf7; margin-top:6px;">Réinitialiser</button>
+    </div>
+
+    <div class="result-box" id="resultBox">
+      <span class="label">Cliquez sur deux niveaux (ou choisissez-les ci-dessus) pour voir les résultats.</span>
+    </div>
+
+    <div>
+      <h2 style="margin-bottom:8px;">Séries spectrales</h2>
+      <div class="series-legend">
+        <span><i class="swatch" style="background:#8e5cff;"></i> Lyman (→ n=1, UV)</span>
+        <span><i class="swatch" style="background:#5cc8ff;"></i> Balmer (→ n=2, visible)</span>
+        <span><i class="swatch" style="background:#ff5c8e;"></i> Paschen (→ n=3, IR)</span>
+        <span><i class="swatch" style="background:#ffd25c;"></i> Autre</span>
+      </div>
+    </div>
+
+    <div class="hint">
+      E<sub>n</sub> = −13.6 / n² eV<br>
+      ΔE = E<sub>final</sub> − E<sub>initial</sub><br>
+      λ = h·c / |ΔE|
+    </div>
+  </div>
+</div>
+ <footer>
+    <div class="signature"> Simulateur niveaux d'énergie de l'atome d'hydrogène - Modèle de Bohrr - chrif.md@gmail.com - Octobre 2026 </div>
+  </footer>
+<script>
+// ---------- Constantes physiques ----------
+const RYDBERG_EV = 13.6; // eV
+const H_EV_S = 4.1357e-15; // eV·s (constante de Planck en eV)
+const C_M_S = 2.998e8; // m/s
+
+const N_LEVELS = 6; // n = 1..6 affichés
+const canvas = document.getElementById('diagram');
+const ctx = canvas.getContext('2d');
+const W = canvas.width, H = canvas.height;
+
+// Positions verticales des niveaux (échelle non linéaire pour bien visualiser
+// le resserrement des niveaux quand n augmente, comme dans la réalité)
+function energyOf(n) {
+  return -RYDBERG_EV / (n * n);
+}
+
+// Mapping énergie -> position y (échelle personnalisée)
+const marginTop = 40;
+const marginBottom = 60;
+const usableHeight = H - marginTop - marginBottom;
+const Emin = energyOf(1); // -13.6 (le plus bas, en bas du diagramme)
+const Emax = 0; // limite d'ionisation (en haut)
+
+function yForEnergy(E) {
+  // E va de Emin (bas) à 0 (haut)
+  const t = (E - Emin) / (Emax - Emin); // 0 -> bas, 1 -> haut
+  return marginTop + (1 - t) * usableHeight;
+}
+
+const levelX1 = 90;
+const levelX2 = W - 90;
+
+let selected = []; // niveaux cliqués (max 2)
+
+function seriesColor(nLow) {
+  if (nLow === 1) return '#8e5cff'; // Lyman
+  if (nLow === 2) return '#5cc8ff'; // Balmer
+  if (nLow === 3) return '#ff5c8e'; // Paschen
+  return '#ffd25c';
+}
+
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+
+  // Ligne de limite d'ionisation
+  const yIon = yForEnergy(0);
+  ctx.strokeStyle = '#3a4670';
+  ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  ctx.moveTo(levelX1 - 20, yIon);
+  ctx.lineTo(levelX2 + 20, yIon);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#7d8ab3';
+  ctx.font = '12px Segoe UI';
+  ctx.fillText('E = 0 (ionisation)', levelX1 - 20, yIon - 8);
+
+  // Niveaux d'énergie
+  for (let n = 1; n <= N_LEVELS; n++) {
+    const E = energyOf(n);
+    const y = yForEnergy(E);
+    const isSelected = selected.includes(n);
+
+    ctx.strokeStyle = isSelected ? '#ffb347' : '#c7d2f0';
+    ctx.lineWidth = isSelected ? 3 : 2;
+    ctx.beginPath();
+    ctx.moveTo(levelX1, y);
+    ctx.lineTo(levelX2, y);
+    ctx.stroke();
+
+    ctx.fillStyle = isSelected ? '#ffb347' : '#c7d2f0';
+    ctx.font = '13px Segoe UI';
+    ctx.textAlign = 'right';
+    ctx.fillText('n = ' + n, levelX1 - 12, y + 4);
+    ctx.textAlign = 'left';
+    ctx.fillText(E.toFixed(2) + ' eV', levelX2 + 12, y + 4);
+  }
+
+  // Flèche de transition si deux niveaux sélectionnés
+  if (selected.length === 2) {
+    const [na, nb] = selected;
+    const nHigh = Math.max(na, nb);
+    const nLow = Math.min(na, nb);
+    const yHigh = yForEnergy(energyOf(nHigh));
+    const yLow = yForEnergy(energyOf(nLow));
+    const xArrow = (levelX1 + levelX2) / 2;
+    const color = seriesColor(nLow);
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.moveTo(xArrow, yHigh);
+    ctx.lineTo(xArrow, yLow);
+    ctx.stroke();
+
+    // pointe de flèche vers le niveau final choisi par l'utilisateur (na -> nb)
+    const yTo = yForEnergy(energyOf(nb));
+    const dir = (yTo > yHigh) ? 1 : -1;
+    ctx.beginPath();
+    ctx.moveTo(xArrow, yTo);
+    ctx.lineTo(xArrow - 6, yTo - dir * 10);
+    ctx.lineTo(xArrow + 6, yTo - dir * 10);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  // Zones cliquables (invisibles) gérées dans le listener via calcul de y
+}
+
+// ---------- Interaction clic sur niveaux ----------
+canvas.addEventListener('click', (evt) => {
+  const rect = canvas.getBoundingClientRect();
+  const clickY = (evt.clientY - rect.top) * (H / rect.height);
+
+  let closestN = null;
+  let closestDist = Infinity;
+  for (let n = 1; n <= N_LEVELS; n++) {
+    const y = yForEnergy(energyOf(n));
+    const d = Math.abs(y - clickY);
+    if (d < closestDist) { closestDist = d; closestN = n; }
+  }
+  if (closestDist > 20) return; // clic trop loin d'une ligne
+
+  if (selected.length === 2) selected = [];
+  selected.push(closestN);
+
+  document.getElementById('n1').value = selected[0] ?? '';
+  if (selected.length === 2) {
+    document.getElementById('n2').value = selected[1];
+    computeTransition(selected[0], selected[1]);
+  }
+  draw();
+});
+
+// ---------- Menus déroulants ----------
+const n1Select = document.getElementById('n1');
+const n2Select = document.getElementById('n2');
+for (let n = 1; n <= N_LEVELS; n++) {
+  n1Select.innerHTML += `<option value="${n}">n = ${n}</option>`;
+  n2Select.innerHTML += `<option value="${n}">n = ${n}</option>`;
+}
+n1Select.value = 2;
+n2Select.value = 1;
+
+document.getElementById('calcBtn').addEventListener('click', () => {
+  const na = parseInt(n1Select.value);
+  const nb = parseInt(n2Select.value);
+  if (na === nb) {
+    document.getElementById('resultBox').innerHTML =
+      '<span class="label">Choisissez deux niveaux différents.</span>';
+    return;
+  }
+  selected = [na, nb];
+  computeTransition(na, nb);
+  draw();
+});
+
+document.getElementById('resetBtn').addEventListener('click', () => {
+  selected = [];
+  document.getElementById('resultBox').innerHTML =
+    '<span class="label">Cliquez sur deux niveaux (ou choisissez-les ci-dessus) pour voir les résultats.</span>';
+  draw();
+});
+
+// ---------- Calcul physique ----------
+function computeTransition(nFrom, nTo) {
+  const Efrom = energyOf(nFrom);
+  const Eto = energyOf(nTo);
+  const deltaE = Eto - Efrom; // énergie du photon absorbé/émis (signée)
+  const absorption = deltaE > 0; // si on monte en énergie -> absorption
+
+  const deltaE_abs = Math.abs(deltaE);
+  const wavelength_m = (H_EV_S * C_M_S) / deltaE_abs;
+  const wavelength_nm = wavelength_m * 1e9;
+
+  let domaine = 'infrarouge';
+  if (wavelength_nm < 400) domaine = 'ultraviolet';
+  else if (wavelength_nm <= 700) domaine = 'visible';
+
+  const nLow = Math.min(nFrom, nTo);
+  let serie = 'Autre';
+  if (nLow === 1) serie = 'Lyman';
+  else if (nLow === 2) serie = 'Balmer';
+  else if (nLow === 3) serie = 'Paschen';
+  else if (nLow === 4) serie = 'Brackett';
+  else if (nLow === 5) serie = 'Pfund';
+
+  const html = `
+    <span class="label">Transition :</span> <span class="value">n=${nFrom} → n=${nTo}</span><br>
+    <span class="label">E(n=${nFrom}) :</span> <span class="value">${Efrom.toFixed(3)} eV</span><br>
+    <span class="label">E(n=${nTo}) :</span> <span class="value">${Eto.toFixed(3)} eV</span><br>
+    <span class="label">ΔE :</span> <span class="value">${deltaE_abs.toFixed(3)} eV</span>
+      (${absorption ? 'absorption' : 'émission'} de photon)<br>
+    <span class="label">Longueur d'onde :</span> <span class="value">${wavelength_nm.toFixed(1)} nm</span>
+      (${domaine})<br>
+    <span class="label">Série spectrale :</span> <span class="value">${serie}</span>
+  `;
+  document.getElementById('resultBox').innerHTML = html;
+}
+
+draw();
+</script>
+</body>
+</html>

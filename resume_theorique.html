@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Résumé théorique — Quantification de l'énergie et spectres atomiques</title>
+<style>
+  :root {
+    --bg: #0b1020;
+    --panel: #131a2e;
+    --text: #e8ecf7;
+    --muted: #92a0c2;
+    --accent: #ffb347;
+    --line: #2a3557;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #0b1020, #060911);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 60px;
+  }
+  .page {
+    width: 100%;
+    max-width: 860px;
+  }
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  h1 {
+    font-size: 1.7rem;
+    font-weight: 600;
+    margin: 0 0 8px 0;
+  }
+  p.subtitle {
+    color: var(--muted);
+    margin: 0;
+    font-size: 0.95rem;
+  }
+  nav.breadcrumb {
+    text-align: center;
+    margin-bottom: 28px;
+    font-size: 0.85rem;
+  }
+  nav.breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+  nav.breadcrumb a:hover { text-decoration: underline; }
+
+  section.panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px 26px;
+    margin-bottom: 22px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, .25);
+  }
+  section.panel h2 {
+    color: var(--accent);
+    font-size: 1.2rem;
+    margin: 0 0 14px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  section.panel h3 {
+    color: var(--text);
+    font-size: 1rem;
+    margin: 20px 0 8px 0;
+  }
+  section.panel p {
+    color: var(--text);
+    line-height: 1.65;
+    margin: 0 0 12px 0;
+  }
+  section.panel ul, section.panel ol {
+    color: var(--text);
+    line-height: 1.65;
+    margin: 0 0 12px 0;
+    padding-left: 22px;
+  }
+  section.panel li { margin-bottom: 6px; }
+  .muted { color: var(--muted); }
+  .accent { color: var(--accent); font-weight: 600; }
+
+  .formula-box {
+    background: #0e1526;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 14px 0;
+    font-size: 1.02rem;
+    color: var(--accent);
+    text-align: center;
+    font-weight: 600;
+  }
+  .formula-box small {
+    display: block;
+    margin-top: 6px;
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 0.78rem;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 620px) {
+    .two-col { grid-template-columns: 1fr; }
+  }
+  table.levels {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0 14px;
+    font-size: 0.88rem;
+  }
+  table.levels th, table.levels td {
+    border-bottom: 1px solid var(--line);
+    padding: 6px 8px;
+    text-align: center;
+  }
+  table.levels th {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .series-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 0.82rem;
+    margin-top: 10px;
+  }
+  .series-legend span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .swatch {
+    width: 10px; height: 10px; border-radius: 50%;
+    display: inline-block;
+  }
+  .apps-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  @media (max-width: 620px) {
+    .apps-grid { grid-template-columns: 1fr; }
+  }
+  .app-card {
+    background: #0e1526;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+  }
+  .app-card h4 {
+    margin: 0 0 6px 0;
+    color: var(--accent);
+    font-size: 0.92rem;
+  }
+  .app-card p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <nav class="breadcrumb"><a href="accueil.html">← Retour à l'accueil</a></nav>
+
+  <header>
+    <h1>Résumé théorique</h1>
+    <p class="subtitle">Quantification de l'énergie et spectres atomiques</p>
+  </header>
+
+  <!-- 1. Franck et Hertz -->
+  <section class="panel">
+    <h2>1. L'expérience de Franck et Hertz</h2>
+
+    <h3>But de l'expérience</h3>
+    <p>
+      Réalisée en 1914 par James Franck et Gustav Hertz, cette expérience consiste à envoyer des
+      électrons, accélérés par une tension réglable <span class="accent">U</span>, à travers une
+      vapeur d'atomes (mercure, sodium, argon, néon...). En mesurant le courant collecté par une
+      anode en fonction de U, on observe que ce courant ne croît pas régulièrement : il présente
+      des chutes brutales, régulièrement espacées d'une même valeur ΔU.
+    </p>
+    <p>
+      Cette observation apporte la <span class="accent">première preuve expérimentale directe</span>
+      que l'énergie interne d'un atome ne peut pas prendre n'importe quelle valeur : elle ne peut
+      changer que par sauts discrets. Un électron ne peut céder de l'énergie à un atome par choc
+      que s'il possède au moins l'énergie correspondant à l'écart entre deux niveaux d'énergie de
+      cet atome — jamais une valeur intermédiaire.
+    </p>
+
+    <h3>Définition du quantum d'énergie</h3>
+    <p>
+      On appelle <span class="accent">quantum d'énergie</span> la plus petite quantité d'énergie
+      qu'un système physique (ici un atome) peut échanger avec l'extérieur au cours d'une
+      transition entre deux de ses niveaux d'énergie permis. L'énergie n'est donc pas continue
+      mais <span class="accent">quantifiée</span> : elle est un multiple entier de ce quantum pour
+      un système donné.
+    </p>
+    <div class="formula-box">
+      E<sub>c</sub> ≈ eU&nbsp;&nbsp;&nbsp;et&nbsp;&nbsp;&nbsp;ΔU ≈ E<sub>exc</sub> / e
+      <small>Le courant chute chaque fois que l'énergie cinétique eU accumulée par l'électron atteint l'énergie d'excitation E<sub>exc</sub> du gaz (quantum d'énergie de la première transition).</small>
+    </div>
+    <p class="muted">
+      Exemple : pour le mercure, E<sub>exc</sub> ≈ 4,9 eV, donc les chutes de courant sont espacées
+      d'environ 4,9 V ; pour le sodium, environ 2,1 eV.
+    </p>
+  </section>
+
+  <!-- 2. Modèle de Bohr -->
+  <section class="panel">
+    <h2>2. Le modèle de Bohr et l'atome d'hydrogène</h2>
+
+    <h3>Postulats du modèle de Bohr</h3>
+    <ul>
+      <li>L'électron ne peut se déplacer autour du noyau que sur certaines orbites bien définies,
+        dites <span class="accent">orbites stationnaires</span>, sans émettre ni absorber
+        d'énergie tant qu'il y reste.</li>
+      <li>À chaque orbite correspond un niveau d'énergie <span class="accent">E<sub>n</sub></span>
+        bien déterminé, repéré par un nombre entier <span class="accent">n</span> (n = 1, 2, 3…),
+        appelé nombre quantique principal.</li>
+      <li>L'atome ne peut échanger de l'énergie avec l'extérieur qu'en passant brutalement d'un
+        niveau à un autre : c'est la <span class="accent">transition électronique</span>. Ce
+        passage s'accompagne de l'émission ou de l'absorption d'un photon dont l'énergie est
+        exactement égale à la différence d'énergie entre les deux niveaux.</li>
+    </ul>
+
+    <h3>Cas particulier de l'atome d'hydrogène</h3>
+    <p>
+      L'hydrogène, avec son unique électron, est le cas le plus simple à traiter. Le modèle de
+      Bohr permet d'établir l'expression exacte des niveaux d'énergie permis :
+    </p>
+    <div class="formula-box">
+      E<sub>n</sub> = − 13,6 / n²&nbsp;&nbsp;(en eV), n = 1, 2, 3, …
+      <small>13,6 eV est l'énergie d'ionisation de l'hydrogène depuis son état fondamental (n = 1). Les niveaux sont négatifs car l'électron est lié au noyau ; E → 0 correspond à l'ionisation de l'atome.</small>
+    </div>
+
+    <table class="levels">
+      <thead><tr><th>n</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr></thead>
+      <tbody>
+        <tr><th>E<sub>n</sub> (eV)</th><td>−13,60</td><td>−3,40</td><td>−1,51</td><td>−0,85</td><td>−0,54</td><td>−0,38</td></tr>
+      </tbody>
+    </table>
+    <p class="muted">
+      Les niveaux se resserrent au fur et à mesure que n augmente, jusqu'à converger vers 0
+      eV (l'atome ionisé, l'électron libre).
+    </p>
+  </section>
+
+  <!-- 3. Calcul de la longueur d'onde -->
+  <section class="panel">
+    <h2>3. Calcul de la longueur d'onde d'une transition</h2>
+    <p>
+      Lorsque l'atome passe d'un niveau d'énergie E<sub>i</sub> (initial) à un niveau E<sub>f</sub>
+      (final), il émet ou absorbe un photon d'énergie égale, en valeur absolue, à la différence
+      d'énergie entre ces deux niveaux :
+    </p>
+    <div class="formula-box">
+      ΔE = |E<sub>f</sub> − E<sub>i</sub>| = h·ν = h·c / λ
+    </div>
+    <p>d'où l'on tire la longueur d'onde du photon échangé :</p>
+    <div class="formula-box">
+      λ = h·c / ΔE
+      <small>h ≈ 6,63×10⁻³⁴ J·s (ou 4,136×10⁻¹⁵ eV·s) — constante de Planck&nbsp;&nbsp;|&nbsp;&nbsp;c ≈ 3,00×10⁸ m/s — célérité de la lumière</small>
+    </div>
+
+    <div class="two-col">
+      <div class="app-card">
+        <h4>Émission</h4>
+        <p>Si E<sub>f</sub> &lt; E<sub>i</sub> (l'électron descend vers un niveau plus bas), l'atome
+        <span class="accent">émet</span> un photon d'énergie ΔE et de longueur d'onde λ.</p>
+      </div>
+      <div class="app-card">
+        <h4>Absorption</h4>
+        <p>Si E<sub>f</sub> &gt; E<sub>i</sub> (l'électron monte vers un niveau plus haut), l'atome
+        doit <span class="accent">absorber</span> un photon incident d'énergie exactement ΔE.</p>
+      </div>
+    </div>
+
+    <h3>Séries spectrales de l'hydrogène</h3>
+    <p>
+      Les transitions de l'hydrogène qui se terminent (émission) ou commencent (absorption) sur un
+      même niveau final n<sub>bas</sub> forment une série spectrale nommée :
+    </p>
+    <div class="series-legend">
+      <span><i class="swatch" style="background:#8e5cff;"></i> Lyman (→ n = 1, ultraviolet)</span>
+      <span><i class="swatch" style="background:#5cc8ff;"></i> Balmer (→ n = 2, visible)</span>
+      <span><i class="swatch" style="background:#ff5c8e;"></i> Paschen (→ n = 3, infrarouge)</span>
+      <span><i class="swatch" style="background:#ffd25c;"></i> Brackett, Pfund… (n ≥ 4, IR lointain)</span>
+    </div>
+    <p class="muted">
+      Le domaine spectral (UV, visible ou IR) dépend donc uniquement du niveau final vers lequel
+      (ou depuis lequel) se fait la transition : plus n<sub>bas</sub> est petit, plus ΔE est grande
+      et plus λ est courte.
+    </p>
+  </section>
+
+  <!-- 4. Applications -->
+  <section class="panel">
+    <h2>4. Applications des spectres atomiques</h2>
+    <p>
+      Puisque chaque élément chimique possède un ensemble unique de niveaux d'énergie, son spectre
+      de raies (d'émission comme d'absorption) constitue une véritable <span class="accent">signature
+      spectrale</span> exploitée dans de nombreux domaines :
+    </p>
+
+    <div class="apps-grid">
+      <div class="app-card">
+        <h4>🔭 Astrophysique</h4>
+        <p>Identifier la composition chimique des étoiles et des nébuleuses à partir de la lumière
+        qu'elles émettent, et mesurer leur vitesse de déplacement (décalage Doppler des raies).</p>
+      </div>
+      <div class="app-card">
+        <h4>🧪 Analyse chimique</h4>
+        <p>La spectroscopie d'émission et d'absorption atomique permet d'identifier et de doser des
+        éléments dans un échantillon (contrôle qualité, environnement, médecine légale).</p>
+      </div>
+      <div class="app-card">
+        <h4>💡 Éclairage</h4>
+        <p>Les lampes spectrales (vapeur de sodium, de mercure, néon…) exploitent les raies
+        d'émission caractéristiques de chaque gaz pour produire une lumière de couleur précise.</p>
+      </div>
+      <div class="app-card">
+        <h4>🔬 Physique quantique &amp; lasers</h4>
+        <p>La compréhension des transitions entre niveaux quantifiés est à la base du
+        fonctionnement des lasers (émission stimulée) et de la physique atomique moderne.</p>
+      </div>
+      <div class="app-card">
+        <h4>⏱️ Métrologie</h4>
+        <p>Les horloges atomiques utilisent une transition atomique extrêmement stable (césium,
+        rubidium) pour définir la seconde avec une précision inégalée.</p>
+      </div>
+      <div class="app-card">
+        <h4>🌍 Sciences de l'atmosphère</h4>
+        <p>L'étude des raies d'absorption dans la lumière solaire traversant l'atmosphère permet de
+        détecter et quantifier certains gaz (ozone, CO₂, vapeur d'eau…).</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Résumé théorique associé aux simulations : Expérience de Franck et Hertz, niveaux d'énergie de
+    l'hydrogène, spectres d'émission et d'absorption.
+  </footer>
+</div>
+<footer>
+  <p>Mohamed Chérif - Menzel Témime - Tunisie (contenu IA) - chrif.md@gmail.com</p> 
+</footer>
+
+</body>
+</html>

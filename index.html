@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expérience de Franck-Hertz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="breadcrumb"><a href="accueil.html">← Retour à l'accueil</a></nav>
+
+  <header>
+    <h1>Expérience de Franck-Hertz</h1>
+    <p id="subtitle">Simulation interactive — tube à vapeur de mercure</p>
+  </header>
+
+  <main>
+    <section class="simulation-card">
+      <div class="canvas-wrap">
+        <canvas id="tubeCanvas"></canvas>
+        <div class="legend">
+          <span><i class="electron-dot"></i> Électrons</span>
+          <span><i class="atom-dot" id="atomLegendDot"></i><span id="atomLegendLabel"> Atomes de mercure</span></span>
+          <span><b>C</b> Cathode</span>
+          <span><b>G</b> Grille</span>
+          <span><b>A</b> Anode</span>
+        </div>
+      </div>
+
+      <aside class="controls">
+        <h2>Générateur & Mesures</h2>
+
+        <label for="gasType">Gaz dans le tube</label>
+        <select id="gasType" class="gas-select">
+          <option value="mercury" selected>Vapeur de mercure (Hg) — 4,9 eV</option>
+          <option value="sodium">Vapeur de sodium (Na) — 2,1 eV</option>
+          <option value="argon">Vapeur d'argon (Ar) — 11,55 eV</option>
+          <option value="neon">Vapeur de néon (Ne) — 18,7 eV</option>
+        </select>
+
+        <!-- BLOC GÉNÉRATEUR ET APPAREILS DE MESURE -->
+        <div class="instruments-panel">
+          
+          <!-- Générateur à tension variable -->
+          <div class="generator-box">
+            <div class="generator-title">⚡ Générateur DC Variable</div>
+            <label for="voltage">Ajustement de la tension (U)</label>
+            <input id="voltage" type="range" min="0" max="50" step="0.1" value="0">
+          </div>
+
+          <!-- Voltmètre et Ampèremètre côte à côte -->
+          <div class="meters-row">
+            
+            <!-- Voltmètre -->
+            <div class="digital-meter voltmeter">
+              <div class="meter-title">Voltmètre (U)</div>
+              <div class="lcd-display">
+                <span id="voltageDisplay">00.0</span> <small>V</small>
+              </div>
+            </div>
+
+            <!-- Ampèremètre -->
+            <div class="digital-meter ammeter">
+              <div class="meter-title">Ampèremètre (I)</div>
+              <div class="lcd-display">
+                <span id="currentDisplay">0.00</span> <small>µA</small>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="energy-box">
+          <div>Énergie électronique moyenne</div>
+          <strong id="energyValue">0.00 eV</strong>
+        </div>
+
+        <div class="buttons">
+          <button id="startBtn" class="primary">▶ Démarrer</button>
+          <button id="pauseBtn">⏸ Pause</button>
+          <button id="stepBtn">⏭ Pas à pas</button>
+          <button id="resetBtn">↻ Réinitialiser</button>
+          <button id="measureBtn">📏 Mesurer</button>
+          <button id="sweepBtn" class="sweep">⇢ Balayage 0 → 50 V</button>
+        </div>
+
+        <label class="check"><input id="showTrails" type="checkbox" checked> Trajectoires</label>
+        <label class="check"><input id="showCollisions" type="checkbox" checked> Collisions</label>
+        <label class="check"><input id="showEnergy" type="checkbox"> Énergie des électrons</label>
+      </aside>
+    </section>
+
+    <section class="panel measurements">
+      <div class="measure-header">
+        <h2>Tableau de mesures</h2>
+        <button id="clearTableBtn">Effacer</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>U (V)</th><th>I (µA)</th><th>Énergie moyenne (eV)</th></tr>
+          </thead>
+          <tbody id="measurementsBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="panel graph-panel">
+        <div class="measure-header">
+          <h2>Courant anodique I en fonction de U</h2>
+          <button id="toggleGraphBtn">👁 Afficher le graphe</button>
+        </div>
+        <canvas id="graphCanvas" style="display:none;"></canvas>
+        <div class="graph-info" id="graphInfo" style="display:none;">
+          <span>Maximums espacés d'environ <b id="peakSpacingValue">4,9 V</b></span>
+          <span id="peakInfo">ΔU mesuré : —</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Principe physique</h2>
+        <p>
+          Les électrons émis par la cathode sont accélérés vers la grille par la tension ajustable du générateur.
+          Lorsqu'ils atteignent environ <b id="excitationEnergyText1">4,9 eV</b>, ils peuvent subir une
+          collision inélastique avec un atome de <span id="gasNameText1">mercure</span>.
+        </p>
+        <p>
+          Ils perdent alors environ <b id="excitationEnergyText2">4,9 eV</b>. Le courant collecté par
+          l'anode et mesuré sur l'ampèremètre diminue.
+        </p>
+
+        <div class="formula">
+          <span>E<sub>c</sub> ≈ eU</span>
+          <span id="formulaDeltaU">ΔU ≈ 4,9 V</span>
+          <span id="formulaExc">E<sub>exc</sub> ≈ 4,9 eV</span>
+        </div>
+
+        <div class="status" id="status">
+          Réglez la tension U pour observer les collisions.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Simulation pédagogique — modèle simplifié de l'expérience de Franck-Hertz. 
+    <p>Mohamed Chérif - Menzel Témime - Tunisie (contenu IA) - chrif.md@gmail.com</p> 
+
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
