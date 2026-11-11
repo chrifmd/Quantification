@@ -42,7 +42,14 @@ h1{font-size:clamp(28px,5vw,44px)}
 .flBox.big .flBar{display:flex;gap:10px;align-items:center}
 .flBox.big .flHint{display:none;margin:0;color:var(--mute);font-size:14px;text-align:center;padding:0 12px}
 @media (orientation:portrait){.flBox.big .flHint{display:block}}
- }
+ .breadcrumb a {
+    color: var(--accent);
+    text-decoration: none;
+    
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
          .signature {
     text-align: right; font-family: "Arial"; font-size: 12px; font-weight: bold;
     color: rgb(1, 48, 66); margin-top: 30px;
@@ -51,6 +58,7 @@ h1{font-size:clamp(28px,5vw,44px)}
 </head>
 <body><div id="app">
 <a class="back" href="https://simphysique.tn">← Retour au site simphysique.tn</a>
+<nav class="breadcrumb"><a href="accueil.html">← Retour à l'accueil</a></nav>
 <h1>Réactions nucléaires</h1>
 <div class="tabbar" role="tablist" aria-label="Chapitres">
 <button role="tab" id="tb1" aria-controls="t1" aria-selected="true">1. Le noyau atomique</button>
