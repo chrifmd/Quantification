@@ -50,10 +50,19 @@ h1{font-size:clamp(28px,5vw,44px)}
   .breadcrumb a:hover {
     text-decoration: underline;
   }
+  
          .signature {
     text-align: center; font-family: "Arial"; font-size: 12px; font-weight: bold;
     color: rgb(1, 48, 66); margin-top: 30px;
   }
+</style>
+<style>
+#toTop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;width:46px;height:46px;padding:0;display:flex;align-items:center;justify-content:center;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.18);opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .2s,transform .2s,visibility .2s,border-color .15s}
+#toTop.show{opacity:1;visibility:visible;transform:none}
+#toTop:hover{border-color:var(--n);color:var(--n)}
+#toTop:focus-visible{outline:2px solid var(--e);outline-offset:2px}
+#toTop svg{width:22px;height:22px;display:block}
+@media (prefers-reduced-motion:reduce){#toTop{transition:none}}
 </style>
 </head>
 <body><div id="app">
@@ -1166,6 +1175,18 @@ window.FLASH_MOVIES = {"rea":{"w":700.0,"h":400.0,"fps":12.0,"bg":"#ffffff","roo
   }
   wire('rea','rea');wire('fus','fus');wire('bec','bec');
   window.FLASH_PLAYERS=players;
+})();
+</script>
+<button type="button" id="toTop" aria-label="Revenir en haut de la page" title="Haut de page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<script>
+(function(){
+  var b=document.getElementById('toTop');
+  function upd(){b.classList.toggle('show',(window.pageYOffset||document.documentElement.scrollTop)>300)}
+  window.addEventListener('scroll',upd,{passive:true});upd();
+  b.addEventListener('click',function(){
+    var rm=window.matchMedia&&matchMedia('(prefers-reduced-motion:reduce)').matches;
+    window.scrollTo({top:0,behavior:rm?'auto':'smooth'});
+  });
 })();
 </script>
 </body></html>
